@@ -1,6 +1,6 @@
 {
   "name": "jshint-jenkins-checkstyle-reporter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JSHint reporter with better support for Jenkins Checkstyle plugin",
   "main": "src/index.js",
   "scripts": {
