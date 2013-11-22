@@ -1,0 +1,28 @@
+{
+  "name": "jshint-jenkins-checkstyle-reporter",
+  "version": "0.0.3",
+  "description": "JSHint reporter with better support for Jenkins Checkstyle plugin",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sublimeye/jshint-jenkins-checkstyle-reporter.git"
+  },
+  "keywords": [
+    "jshint",
+    "reporter",
+    "jenkins",
+    "checkstyle plugin",
+    "jslint",
+    "ci",
+    "jshint ci",
+    "continuous integration"
+  ],
+  "author": "SublimeYe <sublimeye.ua@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sublimeye/jshint-jenkins-checkstyle-reporter/issues"
+  }
+}
