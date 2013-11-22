@@ -1,7 +1,9 @@
+// Author: Boy Baukema
+// Modifications for Jenkins JSHint reporter: Sublimeye, Roman Morozov <sublimeye.ua@gmail.com>
+
 module.exports =
 {
-	reporter: function (results)
-	{
+	reporter: function(results, data, opts) {
 		"use strict";
 
 		var files = {},
@@ -13,14 +15,15 @@ module.exports =
 					"<": "&lt;",
 					">": "&gt;"
 				},
+		/* these codes parsed by Jenkins JSHint plugin */
 				severityCodes = {
-					'e': 'HIGH',
-					'w': 'MEDIUM',
-					'i': 'LOW'
+					'e': 'error',
+					'w': 'warning',
+					'i': 'info'
 				},
-				file, i, issue, severity, reason, evidence, character, line;
+				file, severity, message, line, column, source;
 
-		function encode(s) {
+		function encode (s) {
 			for (var r in pairs) {
 				if (typeof(s) !== "undefined") {
 					s = s.replace(new RegExp(r, "g"), pairs[r]);
@@ -29,40 +32,56 @@ module.exports =
 			return s || "";
 		}
 
-		function parseSeverity(code) {
+		function getSeverity (code) {
 			return severityCodes[ code.charAt(0).toLowerCase() ] || '';
 		}
 
+		function makeAttribute(attr, valueObject) {
+			if (!valueObject[attr]) {
+				throw Error('No property '+attr+' in error object');
+			}
 
-		results.forEach(function (result) {
+			return ' ' + attr + '="'+valueObject[attr]+'"';
+		}
+
+		results.forEach(function(result) {
+			// Register the file
 			result.file = result.file.replace(/^\.\//, '');
 			if (!files[result.file]) {
 				files[result.file] = [];
 			}
-			files[result.file].push(result.error);
+
+			// Add the error
+			files[result.file].push({
+				line: result.error.line,
+				column: result.error.character,
+				severity: getSeverity(result.error.code),
+				message: encode(result.error.reason),
+				source: 'jshint.' + result.error.code
+			});
 		});
 
 		out.push("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-		out.push("<jslint>");
+		out.push("<checkstyle version=\"4.3\">");
 
-		for (file in files) {
-			out.push('\t<file name="/' + file + '">');
+		Object.keys(files).forEach(function(file) {
+			out.push('\t<file name="' + file + '">');
 
-			for (i = 0; i < files[file].length; i++) {
-				issue = files[file][i];
-				reason = encode(issue.reason);
-				evidence = encode(issue.evidence);
-				severity = encode(parseSeverity(issue.code));
-				character = issue.character;
-				line = issue.line;
+			files[file].forEach(function(error) {
 
-				out.push('\t\t<issue line="'+line+'" char="'+character+'" reason="'+reason+'" evidence="'+evidence+'" severity="'+severity+'" />');
+				line = makeAttribute('line', error);
+				column = makeAttribute('column', error);
+				severity = makeAttribute('severity', error);
+				message = makeAttribute('message', error);
+				source = makeAttribute('source', error);
 
-			}
+				out.push('\t\t<error' + line + column + severity + message + source + ' />');
+			});
+
 			out.push('\t</file>');
-		}
+		});
 
-		out.push("</jslint>");
+		out.push("</checkstyle>");
 
 		process.stdout.write(out.join("\n") + "\n");
 	}

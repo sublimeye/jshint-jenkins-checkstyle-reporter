@@ -1,4 +1,4 @@
-jshint-jenkins-violations-reporter
+jshint-jenkins-checkstyle-reporter
 ==================================
 
-JSHint reporter with better support for Jenkins Violations plugin
+JSHint reporter with better support for Jenkins Checkstyle plugin
