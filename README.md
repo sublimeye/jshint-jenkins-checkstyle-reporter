@@ -2,7 +2,7 @@ JSHint checkstyle reporter
 ==================================
 
 ##Changes of this Fork
-This is fork extends the checkstyle reporter of sublimeye. It is now necessary to pass a callback function to the reporter to get the checkstyle results as a string rather than printing them to the console.
+This is fork extends the checkstyle reporter of sublimeye. The reporter is now retrieved by a factory function. For each creation of a reporter it saves all files that were reported to have errors. When JSHint is finished the plugin offers a generateReport() method to retrieve a **single** checkstyle XML string containing the results of all these files.
 
 ## For JSHint Report Plugin (Jenkins Checkstyle Plugin)
 
